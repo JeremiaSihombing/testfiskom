@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/dist/output.css" rel="stylesheet">
+
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8 text-center">
+        <!-- Gambar Logo -->
+        <img src="/images/sibi.png" alt="Logo Sistem Isyarat Bahasa Indonesia" class="mx-auto mb-4 w-24 h-24">
+        
+        <!-- Judul Website -->
+        <h1 class="text-4xl font-semibold text-indigo-800">Sistem Isyarat Bahasa Indonesia</h1>
+        
+        <!-- Slogan Website -->
+        <p class="text-lg text-gray-600 mt-2">Menghubungkan Dunia dengan Bahasa Isyarat</p>
+        
+        <!-- Deskripsi Singkat -->
+        <p class="text-lg text-gray-700 mt-4">
+            Sistem Isyarat Bahasa Indonesia adalah sebuah platform yang bertujuan untuk
+            memfasilitasi komunikasi antara individu dengan gangguan pendengaran menggunakan
+            bahasa isyarat Indonesia. Kami berkomitmen untuk menjembatani kesenjangan
+            komunikasi dan mempromosikan inklusi bagi semua.
+        </p>
+    </div>
+
+ <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-semibold mb-4">Unggah Gambar atau Video</h1>
+        
+        <!-- Input untuk mengunggah file -->
+        <input type="file" id="fileInput" class="mb-4">
+        
+        <!-- Pratinjau Gambar atau Video -->
+        <div id="preview" class="hidden">
+            <h2 class="text-lg font-semibold mb-2">Pratinjau:</h2>
+            <img id="imagePreview" class="mb-2 max-w-full">
+            <video id="videoPreview" class="mb-2 max-w-full" controls></video>
+        </div>
+        
+        <!-- Tombol "Hasil" -->
+        <button id="resultButton" class="bg-blue-500 text-white px-4 py-2 rounded-full mt-4" disabled>Hasil</button>
+
+     
+            <h1 class="text-2xl font-semibold mb-4">Gunakan Webcam</h1>
+            <div class="flex justify-center">
+                <button id="startWebcam" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-400">
+                    Buka Webcam
+                </button>
+            </div>
+            <div class="mt-4 hidden" id="webcamContainer">
+                <video id="webcamVideo" autoplay class="w-full h-auto"></video>
+                <div class="flex justify-center mt-4">
+                    <button id="stopWebcam" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-400">
+                        Tutup Webcam
+                    </button>
+                </div>
+            </div>
+
+
+
+        <!-- Tambahkan skrip JavaScript untuk menangani unggahan file dan pratinjau -->
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const videoPreview = document.getElementById('videoPreview');
+        const preview = document.getElementById('preview');
+        const resultButton = document.getElementById('resultButton');
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+
+            if (file) {
+                const fileType = file.type;
+
+                if (fileType.startsWith('image/')) {
+                    // Jika file adalah gambar
+                    imagePreview.src = URL.createObjectURL(file);
+                    imagePreview.style.display = 'block';
+                    videoPreview.style.display = 'none';
+                } else if (fileType.startsWith('video/')) {
+                    // Jika file adalah video
+                    videoPreview.src = URL.createObjectURL(file);
+                    videoPreview.style.display = 'block';
+                    imagePreview.style.display = 'none';
+                }
+
+                preview.style.display = 'block';
+                resultButton.disabled = false;
+            } else {
+                preview.style.display = 'none';
+                resultButton.disabled = true;
+            }
+        });
+
+        // akses webcam
+
+ let webcamStream = null;
+
+        // Mengakses webcam saat tombol "Buka Webcam" diklik
+        document.getElementById('startWebcam').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const webcamVideo = document.getElementById('webcamVideo');
+                webcamVideo.srcObject = stream;
+                document.getElementById('webcamContainer').classList.remove('hidden');
+                webcamStream = stream;
+            } catch (error) {
+                console.error('Gagal mengakses webcam:', error);
+            }
+        });
+
+        // Menutup webcam saat tombol "Tutup Webcam" diklik
+        document.getElementById('stopWebcam').addEventListener('click', () => {
+            if (webcamStream) {
+                const webcamVideo = document.getElementById('webcamVideo');
+                webcamVideo.srcObject.getTracks().forEach(track => track.stop());
+                webcamVideo.srcObject = null;
+                document.getElementById('webcamContainer').classList.add('hidden');
+                webcamStream = null;
+            }
+        });
+        
+    </script>
+     
+</body>
+</html>
